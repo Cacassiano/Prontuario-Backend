@@ -1,4 +1,6 @@
-package dev.cacassiano.prontuario_api.entitys;
+package dev.cacassiano.prontuario_api.entities;
+
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User {
     @Id @Column(name = "id", nullable = false, unique=true) @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
     @Column(name = "username", nullable = false)
     private String username;
     @Column(name = "password", nullable = false)

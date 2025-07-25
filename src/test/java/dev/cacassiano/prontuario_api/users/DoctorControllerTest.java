@@ -34,10 +34,9 @@ public class DoctorControllerTest {
     @DisplayName("Can register the doctor sucefully")
     public void RegisterDoctorCase1() throws Exception{
         DoctorRequestDTO doctorReq = mapper.readValue(
-            "{\"username\":\"testeDoctor\", \"password\": \"password123\", \"email\": \"testeDoctor@email.com\", \"crm\": \"1234\", \"specs\":[\"Fisioterapia\", \"Quiropraquicia\"]}",
+            "{\"username\":\"testeDoctor\", \"password\": \"password123\", \"email\": \"testeDoctor@email.com\", \"crm\": \"1234\", \"specialtys\":[\"Fisioterapia\", \"Quiropraquicia\"]}",
             DoctorRequestDTO.class
         );
-        System.out.println(mapper.writeValueAsString(doctorReq));
         MvcResult resp = this.mockMvc.perform(
             post(baseUrl+"/register")
                 .contentType("application/json")
@@ -48,20 +47,37 @@ public class DoctorControllerTest {
         .andReturn();
 
         DoctorResponseDTO doctor = new DoctorResponseDTO(
+            null,
             doctorReq.username(),
             doctorReq.email(),
             doctorReq.telephone(),
             doctorReq.crm(),
-            doctorReq.specs()
+            doctorReq.specialtys()
         );
         DoctorResponseDTO responseDTO = mapper.readValue(resp.getResponse().getContentAsString(), DoctorResponseDTO.class);
         assertEquals(doctor.username(), responseDTO.username());
         assertEquals(doctor.email(), responseDTO.email());
         assertEquals(doctor.crm(), responseDTO.crm());
-        assertArrayEquals(doctor.specialty(), responseDTO.specialty());
+        assertArrayEquals(doctor.specialtys(), responseDTO.specialtys());
         assertEquals(doctor.telephone(), responseDTO.telephone());
-
         
+    }
+
+    @Test
+    @DisplayName("Can't register the doctor sucefully - Missing info")
+    public void RegisterDoctorCase2() throws Exception{
+        // No username
+        DoctorRequestDTO doctorReq = mapper.readValue(
+            "{\"password\": \"password123\", \"email\": \"testeDoctor@email.com\", \"crm\": \"1234\", \"specialtys\":[\"Fisioterapia\", \"Quiropraquicia\"]}",
+            DoctorRequestDTO.class
+        );
+
+        this.mockMvc.perform(
+            post(baseUrl+"/register")
+                .contentType("application/json")
+                .content(mapper.writeValueAsString(doctorReq))
+        ).andDo(print())
+        .andExpect(status().isBadRequest());  
     }
 }
 

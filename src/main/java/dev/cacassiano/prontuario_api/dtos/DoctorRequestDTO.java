@@ -6,7 +6,7 @@ public record DoctorRequestDTO(
     String email,
     String crm,
     String telephone,
-    String[] specs
+    String[] specialtys
 ) {
     
 }
